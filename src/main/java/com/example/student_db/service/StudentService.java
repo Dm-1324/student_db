@@ -1,6 +1,5 @@
 package com.example.student_db.service;
 
-
 import com.example.student_db.dto.StudentDto;
 import com.example.student_db.entity.Student;
 import com.example.student_db.repository.StudentRepository;
@@ -18,6 +17,7 @@ public class StudentService {
     public StudentService(StudentRepository repo) {
         this.repo = repo;
     }
+
 
     public Student addStudent(StudentDto dto) {
         Student s = new Student(dto.getName(), dto.getMajor());
@@ -43,7 +43,20 @@ public class StudentService {
     }
 
     public void deleteStudent(Long rollNo) {
+        repo.findById(rollNo)
+                .orElseThrow(() -> new RuntimeException("Student not found with ID: " + rollNo));
         repo.deleteById(rollNo);
     }
 
+    public List<Student> getStudentsByMajor(String major) {
+        return repo.findByMajor(major);
+    }
+
+    public List<Student> getTopRollNos(Long maxRollNo) {
+        return repo.findTopRollNos(maxRollNo);
+    }
+
+    public List<Student> searchStudentsByName(String nameKeyword) {
+        return repo.searchByName(nameKeyword);
+    }
 }

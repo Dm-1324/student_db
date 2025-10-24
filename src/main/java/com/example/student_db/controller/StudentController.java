@@ -20,6 +20,7 @@ public class StudentController {
         this.service = service;
     }
 
+
     @PostMapping
     public ResponseEntity<Student> addStudent(@RequestBody StudentDto dto) {
         Student newStudent = service.addStudent(dto);
@@ -50,7 +51,29 @@ public class StudentController {
 
     @DeleteMapping("/{rollNo}")
     public ResponseEntity<String> deleteStudent(@PathVariable Long rollNo) {
-        service.deleteStudent(rollNo);
-        return ResponseEntity.ok("Student deleted successfully!");
+        try {
+            service.deleteStudent(rollNo);
+            return ResponseEntity.ok("Student deleted successfully!");
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    @GetMapping("/search/major")
+    public List<Student> getStudentsByMajor(@RequestParam String major) {
+        return service.getStudentsByMajor(major);
+    }
+
+
+    @GetMapping("/search/honors")
+    public List<Student> getHonorsStudents(@RequestParam Long maxRollNo) {
+        return service.getTopRollNos(maxRollNo);
+    }
+
+
+    @GetMapping("/search/name")
+    public List<Student> searchStudentsByName(@RequestParam String nameKeyword) {
+        return service.searchStudentsByName(nameKeyword);
     }
 }
